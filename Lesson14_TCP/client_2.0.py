@@ -1,7 +1,7 @@
 import socket
 
 SRV_HOST = '127.0.0.1'
-SRV_PORT = 1234
+SRV_PORT = 7897
 
 name = input('Enter name: ')
 
