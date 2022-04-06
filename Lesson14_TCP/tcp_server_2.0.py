@@ -14,8 +14,10 @@ srv_sock.listen(10)
 
 srv_sock.setblocking(False)
 FOR_READ.append(srv_sock)
-BUFFER = {}
-INPUTS = []
+
+CLIENTS = []
+
+print('Server running')
 
 while True:
     R, W, ERR = select.select(FOR_READ, FOR_WRITE, FOR_READ)
@@ -24,15 +26,16 @@ while True:
             client, addr = srv_sock.accept()
             client.setblocking(False)
             FOR_READ.append(client)
-            INPUTS.append(client)
+            CLIENTS.append(client)
         else:
-            data = r.recv(2048).decode('utf-8')
+            data = r.recv(2048).decode()
             if not data:
-                for index, cl in enumerate(INPUTS):
-                    if cl == r:
-                        del INPUTS[index]
+                for index, c in enumerate(CLIENTS):
+                    if r == c:
+                        del CLIENTS[index]
             else:
                 print(data)
-            for c in INPUTS:
-                if c != r:
-                    c.send(data.encode('utf-8'))
+
+            for clientsock in CLIENTS:
+                if r != clientsock:
+                    clientsock.send(data.encode())
